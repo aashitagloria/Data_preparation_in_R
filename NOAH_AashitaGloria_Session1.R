@@ -1,3 +1,5 @@
+#SESSION 1: Variable, Vector, factor, Matrix, Data Frame, List
+
 2+3
 2*3
 a = 5
@@ -102,16 +104,62 @@ sd(t$b)
 sd(t$c)
 
 #Exercise 1.3
+# Create a vector using a sequence going from 21 to 120. Give it the name “a”.
+a <-seq(21:120)
+a
+
+#Define b as the length of a.
+b<- length(a)
+b
+
+#Define d the 5th element of the vector a.
+d <- a[5]
+d
+
+#Define f the vector containing the elements from the 2nd until the 6th.
+f <- a[2:6]
+f
+
+#Define g the vector containing the 1st , 3rd and 7th elements of a.
+g <- a[c(1,3,7)]
+g
+
+#Create a vector, call it h, containing the sequence of values of “a” from 1 until 100 every 4 observations.
+h <-a[seq(1,100,by=4)]
+h
+
+#Define i the vector containing the elements bigger than 24 and smaller than 29.
+i <-a[a>24&a<29]
+i
+
+#Create a matrix (give it the name l) with 25 rows and 4 columns containing the element of the vector a.
+l <-matrix(a,nrow=25,ncol=4)
+l
+
+#Define m the vector containing the elements of the second column of l.
+m <- l[,2]
+m
+
+#Define n the vector containing the elements of the third row of l.
+n <- l[3,]
+n
+
+#Define o the vector containing the elements included from row 6 until row 12 and from column 2 until column 3 of l.
+o <- l[6:12,2:3]
+o
 
 #Exercise 1.4
 #a
 months <-c("Feb", "Apr", "Jun", "Jul", "Aug")
 months
+
 #b
 sort(months) # months are sorted alphabetically instead of monthwise
+
 #c
 month_levels <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 month_levels
+
 #d
 mymonths <- factor(months,levels=month_levels)
 print(mymonths)
