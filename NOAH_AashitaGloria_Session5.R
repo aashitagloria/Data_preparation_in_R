@@ -136,51 +136,50 @@ weather <- weather %>%
 #Do not change variable types and names.
 
 library(tidyverse)
-coffee_shop <- read_csv("coffeeshop.csv")
+coffee <- read_csv("coffeeshop.csv")
 
 #b) The data frame is not tidy. Explain what is wrong and why.
 
-#The data frame is dirty because the columns are unstructured and 
-#drink sizes, beverage categories should be in rows instead of  columns
+# Data is transposed (observations are in columns, variables in rows).
 
 #c) Using pivot functions, restructure the data frame.
 
-coffee_long <- coffee_shop %>%
-  pivot_longer(
-    cols = -1, # i did this to get rid of the 1st column
-    names_to = "Variable",
-    values_to = "Value"
-  )
+coffee <- coffee %>% 
+  pivot_longer(!Beverage_category, names_to = "Beverage_type",
+               values_to = "value") %>%
+  pivot_wider(names_from = Beverage_category,
+              values_from = value)
 
 #d) Clean the first column, it should be named ‘Beverage_category’ and should have only text, 
 # but no …or numbers.
 
-coffee_long$Beverage_category <- as.character(coffee_long$Beverage_category)
-glimpse(coffee_long)
+coffee <- coffee %>% 
+  separate_wider_delim(Beverage_type, "...", names=c("Beverage_category", "mess"))
+coffee <- coffee%>% select(-mess)
 
 # e) Check the unique values of Total fat and Caffeine. What problems do you see with them?
 
-unique_total_fat <- coffee_long %>%
-  filter(Beverage_category == "Total Fat") %>%
-  pull(Value) %>%
-  unique()
-
-unique_caffeine <- coffee_long %>%
-  filter(Beverage_category == "Caffeine") %>%
-  pull(Value) %>%
-  unique()
-
-unique_total_fat
-unique_caffeine
+unique(coffee$`Total Fat (g)`)
+# A value of 3 2 instead of 3.2
+unique(coffee$`Caffeine (mg)`)
+# Values like varies and Varies are not numbers. 
 
 #f) Clean the Total fat. We should have numbers. 
 #Also, clean Caffeine, whenever more values are possible,just use NA.
+unique(coffee$`Total Fat (g)`)
+coffee <- coffee %>%
+  mutate(`Total Fat (g)`=ifelse(`Total Fat (g)`=="3 2", "3.2", `Total Fat (g)`))
+unique(coffee$`Caffeine (mg)`)
+coffee <- coffee %>%
+  mutate(`Caffeine (mg)`=ifelse(`Caffeine (mg)`=="Varies", NA, `Caffeine (mg)`)) %>%
+  mutate(`Caffeine (mg)`=ifelse(`Caffeine (mg)`=="varies", NA, `Caffeine (mg)`))
+
 #g) Change variable types, use numeric where it is possible to.
+coffee[4:18] <- sapply(coffee[4:18],as.numeric)
+coffee <- coffee %>% mutate(across(4:18, as.numeric))
+glimpse(coffee)
+
 #h) Calculate the sugar content in grams of the drink with the highest caffeine level. (hard exercise)
 
-
-
-
-
-
-
+cafeine <- max(coffee$`Caffeine (mg)`, na.rm=TRUE)
+coffee$`Sugars (g)`[coffee$`Caffeine (mg)`==cafeine & !is.na(coffee$`Caffeine (mg)`)]
