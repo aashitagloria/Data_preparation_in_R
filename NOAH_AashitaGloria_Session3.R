@@ -1,4 +1,4 @@
-#Session 3
+#Session 3: DATA STRUCTURE - Long and Wide Data
 
 # We study about Data structure - there are only 2 functions we study in this session - long and wide
 # long - more rows less columns (fits better for analysis)
@@ -11,7 +11,7 @@ library(tidyverse)
 pew <- read_csv("pew.csv") # this file shows the income groups of people from different religions
 view(pew) # collecting this type of data is legal in the USA but illegal to do in France
 
-# We need to restructure the data since income is a numerical variable and it should be rep in column insteadof rows
+# We need to restructure the data since income is a numerical variable and it should be rep in column instead of rows
 #religion is well structured, we don't need to re-structure it so we exclude it from the long function
 pew.long <- pivot_longer(pew, !religion, names_to ='income', values_to='frequency')
 
@@ -22,7 +22,7 @@ pew.long <- pivot_longer(pew, !religion, names_to ='income', values_to='frequenc
 weather <- read_csv("mexicanweather.csv")
 weather.wide <-pivot_wider(weather, names_from=element, values_from=value) #We don't use quotation marks since the columns already exist 
 
-#USING bodn DATABASE
+#USING bond DATABASE
 #After opening the txt file, it looks like a tabular file
 bond <- read_tsv('Bond.txt')
 view(bond)
@@ -104,20 +104,26 @@ view(athletes)
 
 #c) Make the necessary transformation to have a better dataset (just one pivot at once).
 
-athletes.long <- athletes %>%
-  pivot_longer(!athlete, names_to ="variable", values_to="value")
+athletes.long  <- athletes  %>% pivot_longer(!athlete,
+                                   names_to = "Training",
+                                   values_to = "BMP")
+view(athletes.long)
 
 #d) Check if the transformation is done, and all known problems are solved. Explain what should be done as the next step.
 
-view(athletes.long)
+#We must separate the Training and min/max with the seperator .HR
+athletes.sep <- athletes.long %>% separate(Training,
+                                            c("Training", "value"),
+                                            sep = '.HR')
+
+view(athletes.sep)
 
 #e) Try to find how to make the dataset wide. 
 
-athletes.wide <- athletes.long %>%
-  pivot_wider(
-    names_from = variable, 
-    values_from = value   
-  )
+athletes.wide <- athletes.sep %>% pivot_wider(names_from = value,
+                                      values_from = BMP)
+
+view(athletes.wide)
 
 
 
