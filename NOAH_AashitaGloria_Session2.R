@@ -91,10 +91,14 @@ glimpse(breakfast)
 
 breakfast <- mutate(breakfast, 
                     #Free=Free*1000000, # This is a character so can't apply numerical operations on it
+                    Free = as.numeric(Free), # Converting it into numeric value first
+                    Free=Free*1000000,
                     Red_Price=Red_Price * 1000000,
                     Paid = Paid * 1000000,
                     Total = Total * 1000000,
-                    Meals_Served = Meals_Served * 1000000
+                    Meals_Served = Meals_Served * 1000000,
+                    Free_RP_of_Total_Meals=as.numeric(Free_RP_of_Total_Meals),
+                    Free_RP_of_Total_Meals = Free_RP_of_Total_Meals/100 
                     #,Free_RP_of_Total_Meals = Free_RP_of_Total_Meals/100 # This is a character so can't apply numerical operations on it
                     )
 glimpse(breakfast)
