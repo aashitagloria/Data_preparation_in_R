@@ -1,4 +1,4 @@
-#Session 2 
+#Session 2: DATA IMPORT
 
 library(tidyverse)
 
@@ -18,7 +18,7 @@ glimpse(inspections)
 inspections <- read_csv("inspections.csv", col_names = names, skip = 1)
 glimpse(inspections)
 
-#tsv
+#Tabulator seperated values (tsv)
 
 inpatient <- read_tsv('inpatient.tsv')
 glimpse(inpatient)
@@ -66,18 +66,22 @@ html <- read_html("https://en.wikipedia.org/w/index.php?title=The_Lego_Movie&old
 lego <- html_table(html_element(html, ".tracklist"))
 lego
 
-#EXERCISE 2
-#2.1 a
-
+#Exercise 2.1
+#a) Import the workstoppages.txt file from your working directory. Hint: find out the delimiter.
 workstoppages <- read_delim("workstoppages.txt", delim = "^")
-#b
+
+#b) Use glimpse to check the file structure.
 glimpse(workstoppages)
 
-#2.2 a
+#Exercise 2.2
+#a) Import the breakfast.xlsx file from your working directory (skip unnecessary rows, add variable names as needed).
+#Hint1: If it is not there, you can download from Courses, unzip, and copy to the right folder.
+#Hint2: Checking the file in Excel BEFORE the operation can be very helpful.
 breakfast <- read_xlsx("breakfast.xlsx", col_names = TRUE, skip=3)# we should skip till 3 and then skip 5, not sure how to do it
 glimpse(breakfast)
 
-#b
+#b) Transform your values to logical units (persons instead of millions or thousands, decimals instead of percentages).
+#Hint3: mutate() can help.
 #Renaming the columns to access them
 breakfast <- read_excel("breakfast.xlsx", skip = 4, col_names = c(
   "Fiscal_Year", "Free", "Red_Price",
@@ -85,23 +89,61 @@ breakfast <- read_excel("breakfast.xlsx", skip = 4, col_names = c(
 ))
 glimpse(breakfast)
 
-#transformation using mutate - this is giving an error, not sure why
-breakfast <- breakfast %>%
-  mutate(
-    Free=Free*1000000,
-    Red_Price=Red_Price*1000000,
-    Paid=Paid*1000000,
-    Total=Total*1000000,
-    Meals_Served=Meals_Served*1000000,
-    Free_RP_of_Total_Meals=Free_RP_of_Total_Meals/100
-  )
+breakfast <- mutate(breakfast, 
+                    #Free=Free*1000000, # This is a character so can't apply numerical operations on it
+                    Red_Price=Red_Price * 1000000,
+                    Paid = Paid * 1000000,
+                    Total = Total * 1000000,
+                    Meals_Served = Meals_Served * 1000000
+                    #,Free_RP_of_Total_Meals = Free_RP_of_Total_Meals/100 # This is a character so can't apply numerical operations on it
+                    )
 glimpse(breakfast)
 
+
 #Exercise 2.3
+#a) Read the planets.xlsx file into a data frame planets.
+ 
 planets <- read_xlsx("planets.xlsx", sheet = "planet", col_names = FALSE)
 head(planets)
 
+#b) Calculate the average mass of the planets (use the mean function and subsetting data as you learned in Session 1).
+mean(as.numeric(planets[1, -1])) #NA value
 
+#a) Import the “database test.sav” file.
+install.packages("haven")
+library(haven)
+
+spss_table <- read_spss('database test.sav')
+spss_table
+glimpse(spss_table)
+
+#b) Check the structure of this dataset. Compare the imported database as tibble, and as dataframe.
+spss_table1 <- as.data.frame(spss_table)
+spss_table1
+
+#Exercise 2.5
+#a) Read the Toronto project.xlsx file into a data frame toronto. Pay attention to import the data table, with
+#standard variable names and skip empty rows at the beginning of the Excel worksheet.
+
+library(readxl)
+names <- c("ClinicName", "ClinicLocation", "Neighbouhood", 
+           "Address", "ContactNumber", "OperationalHours",
+           "Services")
+toronto <- read_excel("toronto project.xlsx", 2,
+                      skip = 4, col_names = names)
+
+#b) Remove the almost empty column (that has only a variable name).
+toronto <- toronto[,-3]
+toronto
+
+#Exercise 2.6
+#a) Read the dogs.dta file using the right function in the tidyverse library.
+library(haven)
+dogs <- read_dta("dogs.dta")
+
+#b) Glimpse it.
+
+glimpse(dogs)
 
 
 
