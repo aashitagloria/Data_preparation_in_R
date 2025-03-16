@@ -133,28 +133,32 @@ rainfall_no_mm_final <- rainfall_no_mm_final %>%
   mutate(Rainfall = as.numeric(Rainfall))
 glimpse(rainfall_no_mm_final)
 
-#EXERCISE 4.2
-#a) Read the coffeeshop.csv file to a data frame as it is using the tidyverse library. 
-library(tidyverse)
-
-coffeeshop <- read_csv("coffeeshop.csv")
-#Do not change variable types and names.
+#Exercise 4.2
+#a) Read the coffeeshop.csv file to a data frame as it is using the tidyverse library. Do not change variable types and names.
+coffee <- read_csv("coffeeshop.csv")
+view(coffee)
 
 #b) The data frame is not tidy. Explain what is wrong and why.
-
-#The dataset is not tidy, it contains redundant/repetitive column values 
+# Data is transposed (observations are in columns, variables in rows).
 
 #c) Using pivot functions, restructure the data frame.
+coffee <- coffee %>% 
+  pivot_longer(!Beverage_category, names_to = "Beverage_type",
+               values_to = "value") %>%
+  pivot_wider(names_from = Beverage_category,
+              values_from = value)
+view(coffee)
 
-coffeeshop <- coffeeshop %>%
-  pivot_longer(
-    cols = !Beverage_category, #We want to keep it as it is
-    names_to = "Variable",
-    values_to = "Value"
-  )
+#d) Clean the first column, it should be named ‘Beverage_category’ and should have only text, but no … or numbers.
 
-#d) Clean the first column, it should be named ‘Beverage_category’ and should have only text, 
-#but no …or numbers.
+coffee <- coffee %>% 
+  separate_wider_delim(Beverage_type, "...", names=c("Beverage_category", "mess"))
+coffee <- coffee%>% select(-mess)
+
+view(coffee)
+
 #e) Check the unique values of Total fat and Caffeine. What problems do you see with them?
-
-
+unique(coffee$`Total Fat (g)`)
+# Problem: A value of 3 2 instead of 3.2
+unique(coffee$`Caffeine (mg)`)
+# Problem: Values like varies and Varies are not numbers.
