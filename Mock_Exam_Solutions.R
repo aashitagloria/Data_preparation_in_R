@@ -27,3 +27,38 @@ df$Price[is.na(df$Price)] <- mean(df$Price, na.rm = TRUE)
 #(a) Extract email addresses \\w+@\\w+\\.\\w+ 
 #(b) Extract numbers \\d+ 
 #(c) Find three-letter uppercase codes [A-Z]{3} 
+
+#Question 5: Match each R function to the type of data it is used to load.
+#Function Data Type
+#1. JSON File: fromJSON()
+#2. CSV File: read.csv() 
+#3. Excel File: read_excel() 
+#4. R Serialized Objec: readRDS() 
+
+#Question 6: Match each function to its correct purpose.
+
+#1. Convert wide format to long format: pivot_longer()
+#2. Convert long format to wide format: pivot_wider() 
+#3. Split a column into multiple columns: separate() 
+#4. Merge multiple columns into one: unite() 
+
+#Question 7: Match the method with the correct way it identifies outliers.
+
+boxplot.stats(df$column)$out #Identifies outliers using the interquartile range (IQR) method
+
+abs(scale(df$column)) #Identifies outliers based on standard deviation (z-score method)
+
+df %>% filter(df$column > mean(df$column, na.rm = TRUE) + 3 * sd(df$column, na.rm = TRUE)) #Filters extreme values beyond 3 standard deviations from the mean
+
+quantile(df$column, probs = c(0.05, 0.95), na.rm = TRUE) #Finds the 5th and 95th percentile to detect potential outliers
+
+
+#Question 8: You receive a dataset df with duplicate rows. How would you remove duplicates while keeping only the first occurrence?
+
+#SOLUTUION
+library(dplyr)
+df <- distinct(df)
+
+
+
+
